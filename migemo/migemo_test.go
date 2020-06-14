@@ -1,22 +1,45 @@
 package migemo_test
 
 import (
-	"fmt"
-	"io/ioutil"
+	"bufio"
+	"os"
 	"testing"
 
 	"github.com/oguna/gomigemo-experiments-2020/migemo"
 )
 
-func LoadTestdata() {
+func LoadTestdata() []string {
+	fp, err := os.Open("../testdata/ruby-uniq.txt")
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+	scanner := bufio.NewScanner(fp)
+	keys := make([]string, 0)
+	for scanner.Scan() {
+		keys = append(keys, scanner.Text())
+	}
+	return keys
+}
 
+func LoadMigemoDictionary() *migemo.CompactDictionary {
+	fp, err := os.Open("../testdata/migemo-dict")
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+	dict := migemo.BuildDictionaryFromMigemoDictFile(fp)
+	return dict
 }
 
 func BenchmarkMigemo_UTF8(b *testing.B) {
-	bytes := ioutil.ReadFile("../testdata/migemo-compact-dict")
-	dict := migemo.NewCompactDictionary(bytes)
-	operator = migemo.NewRegexOperator("|", "(", ")", "[", "]", "")
+	dict := LoadMigemoDictionary()
+	operator := migemo.NewRegexOperator("|", "(", ")", "[", "]", "")
+	keys := LoadTestdata()
 	b.ResetTimer()
-	r := migemo.Query("kensaku", dict, operator)
-	fmt.Printf("%s", r)
+	for i := 0; i < b.N; i++ {
+		for _, key := range keys {
+			migemo.Query(key, dict, operator)
+		}
+	}
 }
