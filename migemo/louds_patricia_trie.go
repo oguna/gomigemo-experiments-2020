@@ -120,7 +120,7 @@ func BuildLoudsPatriciaTrie(keys [][]uint16) (*LoudsPatriciaTrie, *BitList) {
 			louds.Add(false)
 			labels = append(labels, trie.edges[node])
 			// もし子が一つしかいないなら、子が複数になるか末尾に着くまで、ノードをすすめる
-			if trie.bitVector.Get(uint32(pos)+1) == true && trie.bitVector.Get(uint32(pos)+2) == false && !oldOutBits.Get(node) {
+			if level > 0 && trie.bitVector.Get(uint32(pos)+1) == true && trie.bitVector.Get(uint32(pos)+2) == false && !oldOutBits.Get(node) {
 				// 子が1つだけなのでパトリシア
 				links.Add(true)
 				tailBits.Add(false)
@@ -130,7 +130,7 @@ func BuildLoudsPatriciaTrie(keys [][]uint16) (*LoudsPatriciaTrie, *BitList) {
 					pos = trie.bitVector.Select(uint32(node), false)
 					tailChars = append(tailChars, trie.edges[node])
 					tailBits.Add(true)
-					if trie.bitVector.Get(uint32(pos)+1) != true || trie.bitVector.Get(uint32(pos)+2) != false || oldOutBits.Get(node) {
+					if uint(trie.bitVector.sizeInBits) <= pos+2 || trie.bitVector.Get(uint32(pos)+1) != true || trie.bitVector.Get(uint32(pos)+2) != false || oldOutBits.Get(node) {
 						break
 					}
 				}
@@ -138,7 +138,7 @@ func BuildLoudsPatriciaTrie(keys [][]uint16) (*LoudsPatriciaTrie, *BitList) {
 				links.Add(false)
 			}
 			outs.Add(oldOutBits.Get(node))
-			if trie.bitVector.Get(uint32(pos)+1) == false {
+			if pos+1 >= uint(trie.bitVector.sizeInBits) || trie.bitVector.Get(uint32(pos)+1) == false {
 				// 子がいないので終了
 			} else {
 				// 子が複数いるか、子がキーなので、パトリシアにしない
