@@ -17,4 +17,6 @@ func main() {
 	fmt.Printf("IoSize: %d\n", dict.IoSize())
 	a, b := dict.NodeSize()
 	fmt.Printf("#Nodes: %d %d\n", a, b)
+	operator := migemo.NewRegexOperator("|", "(", ")", "[", "]", "")
+	fmt.Printf(migemo.Query("kensaku", dict, operator))
 }
