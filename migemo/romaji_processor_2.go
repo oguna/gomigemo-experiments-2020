@@ -4,6 +4,12 @@ import (
 	"strings"
 )
 
+// RomajiPredictiveResult は、RomajiProcessorの結果を返す構造体
+type RomajiPredictiveResult struct {
+	Prefix   string
+	Suffixes []string
+}
+
 // RomajiProcessor2 は、DoubleArrayでローマ字を処理する構造体
 type RomajiProcessor2 struct {
 	trie         *DoubleArray

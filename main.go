@@ -14,5 +14,7 @@ func main() {
 	}
 	defer fp.Close()
 	dict := migemo.BuildDictionaryFromMigemoDictFile(fp)
-	fmt.Printf("%d\n", dict.IoSize())
+	fmt.Printf("IoSize: %d\n", dict.IoSize())
+	a, b := dict.NodeSize()
+	fmt.Printf("#Nodes: %d %d\n", a, b)
 }

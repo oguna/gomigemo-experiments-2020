@@ -206,3 +206,8 @@ func (compactDictionary *CompactDictionary) Save(fp *os.File) {
 func (compactDictionary *CompactDictionary) IoSize() int {
 	return compactDictionary.keyTrie.IoSize() + compactDictionary.valueTrie.IoSize() + compactDictionary.mappingBitVector.IoSize() + IoSizeUint32Array(compactDictionary.mapping)
 }
+
+// NodeSize is ...
+func (compactDictionary *CompactDictionary) NodeSize() (int, int) {
+	return compactDictionary.keyTrie.Size(), compactDictionary.valueTrie.Size()
+}
