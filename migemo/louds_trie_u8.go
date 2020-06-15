@@ -194,3 +194,8 @@ func BuildLoudsTrieU8(keys []string) (*LoudsTrieU8, []uint32) {
 	var bitVector = NewBitVector(louds.Words, uint32(louds.Size))
 	return NewLoudsTrieU8(bitVector, edges), nodes
 }
+
+// IoSize is ...
+func (trie *LoudsTrieU8) IoSize() int {
+	return trie.bitVector.IoSize() + IoSizeUint8Array(trie.edges)
+}

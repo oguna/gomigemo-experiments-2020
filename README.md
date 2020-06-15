@@ -28,6 +28,9 @@ go test -benchmem -run=^$ github.com/oguna/gomigemo-experiments-2020/migemo -ben
 
 ### Character Encoding
 
+| Encoding | Size(byte) | Time(ms) | #KeyNodes | #ValueNodes |
+| -------- | ---------- | -------- | ------- | ------- |
+| UTF8     |  2,919,990 |  436.377 | 784,875 | 734,043 |
 
 ### Trie Structure
 

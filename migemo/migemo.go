@@ -3,19 +3,18 @@ package migemo
 import (
 	"regexp"
 	"strings"
-	"unicode/utf16"
 )
 
 // QueryAWord は、migemoクエリを処理する
-func QueryAWord(word string, dict *CompactDictionary, operator *RegexOperator) string {
+func QueryAWord(word string, dict *CompactDictionaryU8, operator *RegexOperator) string {
 	var utf32word = []rune(word)
 	var generator = NewTernaryRegexGenerator(*operator)
 	generator.Add(utf32word)
 	var lower = strings.ToLower(word)
 	if dict != nil {
-		var utf16lower = utf16.Encode([]rune(lower))
-		dict.PredictiveSearch(utf16lower, func(word []uint16) {
-			generator.Add(utf16.Decode(word))
+		var utf8lower = []byte(string([]rune(lower)))
+		dict.PredictiveSearch(utf8lower, func(word []uint8) {
+			generator.Add([]rune(string(word)))
 		})
 	}
 	var zen = ConvertHan2Zen(word)
@@ -28,14 +27,14 @@ func QueryAWord(word string, dict *CompactDictionary, operator *RegexOperator) s
 	for _, a := range hiraganaResult.Suffixes {
 		var hira = hiraganaResult.Prefix + a
 		var utf32hira = []rune(hira)
-		var utf16hira = utf16.Encode(utf32hira)
+		var utf8hira = []byte(string(utf32hira))
 		generator.Add(utf32hira)
 		if dict != nil {
-			dict.PredictiveSearch(utf16hira, func(word []uint16) {
-				generator.Add(utf16.Decode(word))
+			dict.PredictiveSearch(utf8hira, func(word []uint8) {
+				generator.Add([]rune(string(word)))
 			})
 		}
-		var kata = ConvertHira2Kata(string([]rune(utf16.Decode(utf16hira))))
+		var kata = ConvertHira2Kata(string(utf8hira))
 		generator.Add([]rune(kata))
 		generator.Add([]rune(ConvertZen2Han(kata)))
 	}
@@ -43,7 +42,7 @@ func QueryAWord(word string, dict *CompactDictionary, operator *RegexOperator) s
 }
 
 // Query は、migemoクエリを処理する
-func Query(word string, dict *CompactDictionary, operator *RegexOperator) string {
+func Query(word string, dict *CompactDictionaryU8, operator *RegexOperator) string {
 	if len(word) == 0 {
 		return ""
 	}
