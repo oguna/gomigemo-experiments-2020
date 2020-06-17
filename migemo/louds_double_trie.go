@@ -148,3 +148,18 @@ func BuildLoudsDoubleTrie(keys [][]uint16) (*LoudsDoubleTrie, []uint32) {
 	}
 	return trie, prefixStringNodes
 }
+
+// Size is ...
+func (trie *LoudsDoubleTrie) Size() int {
+	return trie.prefixTrie.Size()
+}
+
+// NumOfNodes is ...
+func (trie *LoudsDoubleTrie) NumOfNodes() int {
+	return trie.prefixTrie.Size() + trie.tailTrie.Size()
+}
+
+// IoSize is ...
+func (trie *LoudsDoubleTrie) IoSize() int {
+	return trie.prefixTrie.IoSize() + trie.tailTrie.IoSize() + trie.outs.IoSize() + trie.linkBitVector.IoSize() + IoSizeUint32Array(trie.linkArray)
+}

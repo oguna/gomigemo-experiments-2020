@@ -31,11 +31,13 @@ go test -benchmem -run=^$ github.com/oguna/gomigemo-experiments-2020/migemo -ben
 | Encoding | Size(byte) | Time(ms) | #KeyNodes | #ValueNodes |
 | -------- | ---------- | -------- | ------- | ------- |
 | UTF8     |  2,919,990 |  436.377 | 784,875 | 734,043 |
+| UTF16    |  2,513,406 |  259.629 | 380,448 | 305,153 |
 
 ### Trie Structure
 
 | Trie     | Size(byte) | Time(ms) | #KeyNodes | #ValueNodes |
 | -------- | ---------- | -------- | ------- | ------- |
-| Louds    |  2,513,406 |  259.629 | 380,448 | 305,153 |
+| Trie     |  2,513,406 |  259.629 | 380,448 | 305,153 |
 | Prefix   |  2,579,758 |  265.350 | 199,955 | 215,200 |
 | Patricia |  2,570,950 |  260.022 | 182,887 | 208,975 |
+| Double   |  2,652,300 |  259.849 | 215,013 | 228,057 |

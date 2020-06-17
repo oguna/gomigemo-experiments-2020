@@ -45,7 +45,7 @@ func BuildDictionaryFromMigemoDictFile(fp io.Reader) *CompactDictionary {
 	for i := 0; i < len(keys); i++ {
 		keysUtf16[i] = utf16.Encode([]rune(keys[i]))
 	}
-	keyTrie, _ := BuildLoudsPatriciaTrie(keysUtf16)
+	keyTrie, _ := BuildLoudsDoubleTrie(keysUtf16)
 
 	// build value trie
 	valuesUtf16 := make([][]uint16, 0, len(dict))
@@ -53,7 +53,7 @@ func BuildDictionaryFromMigemoDictFile(fp io.Reader) *CompactDictionary {
 		valuesUtf16 = append(valuesUtf16, utf16.Encode([]rune(k)))
 	}
 	sort.Slice(valuesUtf16, func(i, j int) bool { return CompareUtf16String(valuesUtf16[i], valuesUtf16[j]) < 0 })
-	valueTrie, _ := BuildLoudsPatriciaTrie(valuesUtf16)
+	valueTrie, _ := BuildLoudsDoubleTrie(valuesUtf16)
 
 	// build mapping from key trie to value trie
 	mappingCount := 0

@@ -156,7 +156,7 @@ func (compactDictionary *CompactDictionaryU8) NodeSize() (int, int) {
 	return compactDictionary.keyTrie.Size(), compactDictionary.valueTrie.Size()
 }
 
-// BuildDictionaryFromMigemoDictFile は、ファイルからCompactDictionaryを読み込む
+// BuildDictionaryU8FromMigemoDictFile は、ファイルからCompactDictionaryを読み込む
 func BuildDictionaryU8FromMigemoDictFile(fp io.Reader) *CompactDictionaryU8 {
 	scanner := bufio.NewScanner(fp)
 	dict := make(map[string][]string)
@@ -189,7 +189,12 @@ func BuildDictionaryU8FromMigemoDictFile(fp io.Reader) *CompactDictionaryU8 {
 
 	// build key trie
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
-	keyTrie, _ := BuildLoudsTrieU8(keys)
+	keyTrieBuilder := NewLoudsTrieBuilderU8()
+	for _, key := range keys {
+		keyTrieBuilder.Add(key)
+	}
+	keyTrie := keyTrieBuilder.Build()
+	//keyTrie, _ := BuildLoudsTrieU8(keys)
 
 	// build value trie
 	valuesUtf8 := make([]string, 0, len(values))
@@ -197,7 +202,12 @@ func BuildDictionaryU8FromMigemoDictFile(fp io.Reader) *CompactDictionaryU8 {
 		valuesUtf8 = append(valuesUtf8, k)
 	}
 	sort.Slice(valuesUtf8, func(i, j int) bool { return valuesUtf8[i] < valuesUtf8[j] })
-	valueTrie, _ := BuildLoudsTrieU8(valuesUtf8)
+	valueTrieBuilder := NewLoudsTrieBuilderU8()
+	for _, key := range valuesUtf8 {
+		valueTrieBuilder.Add(key)
+	}
+	valueTrie := valueTrieBuilder.Build()
+	//valueTrie, _ := BuildLoudsTrieU8(valuesUtf8)
 
 	// build mapping from key trie to value trie
 	mappingCount := 0
@@ -212,11 +222,19 @@ func BuildDictionaryU8FromMigemoDictFile(fp io.Reader) *CompactDictionaryU8 {
 		key = key[:0]
 		keyTrie.ReverseLookup(uint32(i), &key)
 		mappingBitList.Add(false)
-		values, ok := dict[string(key)]
+		words, ok := dict[string(key)]
 		if ok {
-			for j := 0; j < len(values); j++ {
+			for j := 0; j < len(words); j++ {
 				mappingBitList.Add(true)
-				mapping[mappingIndex] = uint32(valueTrie.Lookup([]byte(values[j])))
+				a := valueTrie.Lookup([]byte(words[j]))
+				b := sort.SearchStrings(valuesUtf8, words[j])
+				if a <= 0 {
+					panic("")
+				}
+				if valuesUtf8[b] != words[j] {
+					panic("")
+				}
+				mapping[mappingIndex] = uint32(a)
 				mappingIndex++
 			}
 		}

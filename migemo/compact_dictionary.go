@@ -6,8 +6,8 @@ import (
 
 // CompactDictionary は、読み毎に複数の単語を格納した辞書
 type CompactDictionary struct {
-	keyTrie          *LoudsPatriciaTrie
-	valueTrie        *LoudsPatriciaTrie
+	keyTrie          *LoudsDoubleTrie
+	valueTrie        *LoudsDoubleTrie
 	mappingBitVector *BitVector
 	mapping          []uint32
 	// hasMappingBitList は、あるノードがマッピングを持つかを格納する
@@ -209,5 +209,5 @@ func (compactDictionary *CompactDictionary) IoSize() int {
 
 // NodeSize is ...
 func (compactDictionary *CompactDictionary) NodeSize() (int, int) {
-	return compactDictionary.keyTrie.Size(), compactDictionary.valueTrie.Size()
+	return compactDictionary.keyTrie.NumOfNodes(), compactDictionary.valueTrie.NumOfNodes()
 }

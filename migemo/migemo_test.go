@@ -22,13 +22,13 @@ func LoadTestdata() []string {
 	return keys
 }
 
-func LoadMigemoDictionary() *migemo.CompactDictionaryU8 {
+func LoadMigemoDictionary() *migemo.CompactDictionary {
 	fp, err := os.Open("../testdata/migemo-dict")
 	if err != nil {
 		panic(err)
 	}
 	defer fp.Close()
-	dict := migemo.BuildDictionaryU8FromMigemoDictFile(fp)
+	dict := migemo.BuildDictionaryFromMigemoDictFile(fp)
 	return dict
 }
 

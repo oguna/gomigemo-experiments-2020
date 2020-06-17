@@ -13,7 +13,7 @@ func main() {
 		panic(err)
 	}
 	defer fp.Close()
-	dict := migemo.BuildDictionaryU8FromMigemoDictFile(fp)
+	dict := migemo.BuildDictionaryFromMigemoDictFile(fp)
 	fmt.Printf("IoSize: %d\n", dict.IoSize())
 	a, b := dict.NodeSize()
 	fmt.Printf("#Nodes: %d %d\n", a, b)
